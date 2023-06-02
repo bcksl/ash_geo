@@ -5,6 +5,11 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [v0.1.1](https://github.com/bcksl/ash_geo/compare/v0.1.0...v0.1.1) (2023-06-02)
+
+
+
+
 ## [v0.1.0](https://github.com/bcksl/ash_geo/compare/v0.1.0...v0.1.0) (2023-06-02)
 
 
