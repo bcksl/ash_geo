@@ -9,8 +9,8 @@
 [![License](https://img.shields.io/github/license/bcksl/ash_geo?color=blue)](https://github.com/bcksl/git_opts/blob/main/LICENSE.md)
 [![GitHub Stars](https://img.shields.io/github/stars/bcksl/ash_geo?color=ffd700&label=github&logo=github)](https://github.com/bcksl/ash_geo)
 
-**AshGeo** contains tools for using [PostGIS] with your [Ash] resources and
-expressions, backed by [Geo] and [Geo.PostGIS].
+**AshGeo** contains tools for using geospatial data in [Ash] resources and
+expressions, backed by [PostGIS], [Geo], [Geo.PostGIS] and [Topo].
 
 It provides:
 
