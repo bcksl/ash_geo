@@ -25,7 +25,7 @@ defmodule AshGeo.Validation.Builder do
   defmacro build_topo(function) do
     quote location: :keep,
           bind_quoted: [function: function] do
-      @doc "Check geometry A against geometry B using `Topo.#{function}`"
+      @doc "Check geometry A against geometry B using `Topo.#{function}/2`"
       defmacro unquote(:"#{String.replace("#{function}", "?", "")}")(geometry_a, geometry_b) do
         function = unquote(function)
 

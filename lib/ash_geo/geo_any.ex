@@ -88,7 +88,7 @@ defmodule AshGeo.GeoAny do
   Accepts all options for `AshGeo.Geometry`, plus `prefer_binary_encoding`,
   and may also be narrowed with `use` in the same way.
 
-  Options:
+  ### Options
 
   #{Spark.OptionsHelpers.docs(AshGeo.GeoAny.Use.opts_schema())}
   """

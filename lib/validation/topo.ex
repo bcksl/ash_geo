@@ -20,13 +20,13 @@ defmodule AshGeo.Validation.Topo do
   @moduledoc """
   Validate that the specified `Topo` function return true.
 
-  Options:
+  ### Options
 
   #{Spark.OptionsHelpers.docs(@opts_schema)}
 
-  See also:
+  ### See also
 
-  - https://hexdocs.pm/topo/Topo.html
+  - `AshGeo.topo_functions/0`
   """
   @moduledoc since: "0.1.0"
 

@@ -1,5 +1,19 @@
 defmodule AshGeo do
-  @moduledoc false
+  @moduledoc """
+  Base module containing common utility functions
+
+  This module contains some things used internally that may also be useful
+  outside of `AshGeo` itself, but depending upon what you what to do, you should
+  probably be using one of:
+
+  - `AshGeo.Validation` for validations of `Geo` types and using `Topo`
+    functions
+  - `AshGeo.Postgis` for [PostGIS `st_*`
+    functions](https://postgis.net/docs/reference.html) for use with `Ash.Expr`
+  - `AshGeo.GeoAny`, `AshGeo.GeoJson`, `AshGeo.GeoWkt`, `AshGeo.GeoWkb` for
+    input types
+  - `AshGeo.Geometry` for base geometry type
+  """
   @moduledoc since: "0.1.0"
 
   @doc "Transform the last element of a module path into a snake-cased atom."
@@ -36,7 +50,7 @@ defmodule AshGeo do
     end
   end
 
-  @doc "All `Geo` types"
+  @doc "List of `Geo` types"
   @doc since: "0.1.0"
   def geo_types do
     [
@@ -70,9 +84,7 @@ defmodule AshGeo do
     end)
   end
 
-  @doc """
-  `Topo` functions
-  """
+  @doc "List of `Topo` functions"
   @doc since: "0.1.0"
   def topo_functions do
     [

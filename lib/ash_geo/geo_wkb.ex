@@ -34,7 +34,7 @@ defmodule AshGeo.GeoWkb do
   Accepts all options of `AshGeo.Geometry`, and may be narrowed with `use`
   in the same way.
 
-  Options:
+  ### Options
 
   #{Spark.OptionsHelpers.docs(AshGeo.Geometry.Use.opts_schema())}
   """

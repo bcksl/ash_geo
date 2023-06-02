@@ -135,9 +135,9 @@ The full documentation can be found [on HexDocs].
 
 To get set up with the development environment, you will need a Postgres
 instance with support for the PostGIS extensions listed in
-`AshGeo.Test.Repo.installed_extensions()` (the [`postgis/postgis`][postgis
-image] image works nicely) and a superuser account `ash_geo_test` credentialed
-according to `config/config.exs`.
+`test/support/repo.ex` (the [`postgis/postgis`][postgis image] image works
+nicely) and a superuser account `ash_geo_test` credentialed according to
+`config/config.exs`.
 
 **AshGeo** uses `ex_check` to bundle the test configuration, and simply running
 `mix check` should closely follow the configuration used in CI.

@@ -15,7 +15,7 @@ defmodule AshGeo.Validation.ArgumentStructType do
   @moduledoc """
   Validate that the argument's value matches the specified struct type.
 
-  Options:
+  ### Options
 
   #{Spark.OptionsHelpers.docs(@opts_schema)}
   """

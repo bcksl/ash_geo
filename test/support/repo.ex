@@ -3,7 +3,8 @@ defmodule AshGeo.Test.Repo do
 
   use AshPostgres.Repo, otp_app: :ash_geo
 
-  @doc "Repo extensions, primarily from PostGIS"
+  @doc false
+  @impl AshPostgres.Repo
   def installed_extensions do
     [
       "uuid-ossp",

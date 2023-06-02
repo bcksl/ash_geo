@@ -18,13 +18,13 @@ defmodule AshGeo.Geometry.Use do
     ```
 
     ```elixir
-    use AshGeo.Geometry, geo_types: [Geo.point, Geo.PointZ, Geo.PointZM]
+    use AshGeo.Geometry, geo_types: [:point, Geo.PointZ, :point_zm]
     ```
 
     #### See also
 
-    - `AshGeo.Common.geo_default_types`
-    - `AshGeo.Common.geo_type_aliases`
+    - `AshGeo.geo_types/0`
+    - `AshGeo.geo_type_aliases/0`
     """,
     type: {:or, [{:list, {:or, [:module, :atom]}}, {:or, [:module, :atom]}]}
   ]
@@ -147,10 +147,10 @@ defmodule AshGeo.Geometry do
   @moduledoc """
   Base geometry type
 
-  To create a constrained geometry type, `use AshGeo.Geometry` accepts two
-  options that may be useful:
+  To create a constrained geometry type, `use AshGeo.Geometry` accepts several
+  options that may be useful.
 
-  Options:
+  ### Options
 
   #{Spark.OptionsHelpers.docs(AshGeo.Geometry.Use.opts_schema())}
 
