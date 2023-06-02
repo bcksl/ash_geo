@@ -8,11 +8,12 @@ defmodule AshGeo.MixProject do
   def project do
     [
       app: :ash_geo,
-      version: "0.1.0",
+      version: @version,
       elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
       elixirc_paths: elixirc_paths(Mix.env()),
       preferred_cli_env: preferred_cli_env(),
+      cli: cli(),
       deps: deps(),
       package: package(),
       test_coverage: test_coverage(),
@@ -22,15 +23,10 @@ defmodule AshGeo.MixProject do
     ]
   end
 
-  IO.puts(Mix.env())
-
-  if Mix.env() == :test do
-    def application() do
-      [
-        mod: {AshGeo.Test.Application, []}
-      ]
-
-      # applications: [:ecto, :ecto_sql, :jason, :ash, :postgrex, :geo, :ash_postgres]
+  def application() do
+    case Mix.env() do
+      :test -> [mod: {AshGeo.Test.Application, []}]
+      _ -> []
     end
   end
 
@@ -87,16 +83,22 @@ defmodule AshGeo.MixProject do
 
   def cli do
     [
+      default_task: :compile,
       preferred_envs: preferred_cli_env()
     ]
   end
 
-  def preferred_cli_env do
+  defp preferred_cli_env do
     [
-      test: :test,
-      docs: :test,
-      format: :test,
       check: :test,
+      "hex.outdated": :test,
+      format: :test,
+      docs: :dev,
+      dialyzer: :dev,
+      credo: :dev,
+      sobelow: :dev,
+      doctor: :dev,
+      test: :test,
       coveralls: :test,
       "coveralls.detail": :test,
       "coveralls.post": :test,
