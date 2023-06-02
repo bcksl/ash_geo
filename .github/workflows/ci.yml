@@ -1,0 +1,13 @@
+name: AshGeo CI
+on:
+  push:
+    #tags:
+    #  - "v*"
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  ash-geo-ci:
+    uses: bcksl/ash_geo/.github/workflows/ash-geo-ci.yml@main
+    secrets:
+      HEX_API_KEY: ${{ secrets.HEX_API_KEY }}
