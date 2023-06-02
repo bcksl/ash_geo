@@ -1,5 +1,7 @@
 name: AshGeo CI
 on:
+  release:
+    types: [published]
   push:
     #tags:
     #  - "v*"
