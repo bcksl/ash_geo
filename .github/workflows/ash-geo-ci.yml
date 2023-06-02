@@ -13,7 +13,7 @@ on:
         default: true
       postgres:
         type: boolean
-        default: false
+        default: true
       hex-api-key:
         type: string
 jobs:
@@ -52,7 +52,7 @@ jobs:
         with:
           mix-env: test
           task: hex.outdated
-  unused-deps:
+  unused:
     name: mix deps.unlock --check-unused
     runs-on: ubuntu-latest
     needs: build-test
@@ -69,12 +69,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: team-alembic/staple-actions/actions/mix-hex-audit@main
-  deps-audit:
-    name: mix deps.audit
-    runs-on: ubuntu-latest
-    needs: build-test
-    steps:
-      - uses: actions/checkout@v3
       - uses: team-alembic/staple-actions/actions/mix-task@main
         with:
           mix-env: test
@@ -147,8 +141,8 @@ jobs:
       - uses: team-alembic/staple-actions/actions/mix-doctor@main
         with:
           mix-env: dev
-  test:
-    name: mix test
+  coveralls:
+    name: mix coveralls
     runs-on: ubuntu-latest
     needs: build-test
     services:
@@ -171,67 +165,22 @@ jobs:
         with:
           mix-env: test
           task: ash_postgres.generate_migrations
-        #if: ${{inputs.postgres}}
+        if: ${{inputs.postgres}}
       - uses: team-alembic/staple-actions/actions/mix-task@main
         with:
           mix-env: test
           task: ash_postgres.create
-        #if: ${{inputs.postgres}}
+        if: ${{inputs.postgres}}
       - uses: team-alembic/staple-actions/actions/mix-task@main
         with:
           mix-env: test
           task: ash_postgres.migrate
-        #if: ${{inputs.postgres}}
+        if: ${{inputs.postgres}}
 #      - uses: team-alembic/staple-actions/actions/mix-task@main
 #        with:
 #          mix-env: test
 #          task: ash_postgres.migrate --tenants
-#        #if: ${{inputs.postgres}}
-      - uses: team-alembic/staple-actions/actions/mix-test@main
-        with:
-          mix-env: test
-        env:
-          PGHOST: postgis
-  coveralls:
-    name: mix coveralls
-    runs-on: ubuntu-latest
-    needs: test
-    services:
-      postgis:
-        image: postgis/postgis
-        env:
-          POSTGRES_USER: ash_geo_test
-          POSTGRES_DB: ash_geo_test
-          POSTGRES_HOST_AUTH_METHOD: trust
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-    steps:
-      - uses: actions/checkout@v3
-      - uses: team-alembic/staple-actions/actions/mix-task@main
-        with:
-          mix-env: test
-          task: ash_postgres.generate_migrations
-        #if: ${{inputs.postgres}}
-      - uses: team-alembic/staple-actions/actions/mix-task@main
-        with:
-          mix-env: test
-          task: ash_postgres.create
-        #if: ${{inputs.postgres}}
-      - uses: team-alembic/staple-actions/actions/mix-task@main
-        with:
-          mix-env: test
-          task: ash_postgres.migrate
-        #if: ${{inputs.postgres}}
-#      - uses: team-alembic/staple-actions/actions/mix-task@main
-#        with:
-#          mix-env: test
-#          task: ash_postgres.migrate --tenants
-#        #if: ${{inputs.postgres}}
+#        if: ${{inputs.postgres}}
       - uses: team-alembic/staple-actions/actions/mix-task@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -244,9 +193,8 @@ jobs:
       - deps
       - build-dev
       - outdated
-      - unused-deps
+      - unused
       - audit
-      - deps-audit
       - format
 #      - spark-formatter
       - docs
@@ -254,7 +202,6 @@ jobs:
       - credo
       - doctor
       - sobelow
-      - test
       - coveralls
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
