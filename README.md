@@ -139,6 +139,12 @@ instance with support for the PostGIS extensions listed in
 nicely) and a superuser account `ash_geo_test` credentialed according to
 `config/config.exs`.
 
+You may now generate and apply the test migrations:
+
+```sh
+mix ash_postgres.generate_migrations
+```
+
 **AshGeo** uses `ex_check` to bundle the test configuration, and simply running
 `mix check` should closely follow the configuration used in CI.
 
