@@ -5,7 +5,7 @@
     deps_audit: "mix deps.audit",
     docs: "mix docs",
     sobelow: "mix sobelow --config",
-    test: "mix test",
+    migrations: "mix ash_postgres.generate_migrations --check",
     coveralls: "mix coveralls"
   ]
 ]
