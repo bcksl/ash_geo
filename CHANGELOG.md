@@ -5,6 +5,15 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [v0.1.2](https://github.com/bcksl/ash_geo/compare/v0.1.1...v0.1.2) (2023-06-07)
+
+
+
+
+### Bug Fixes:
+
+* ensure ci gets triggered on release
+
 ## [v0.1.1](https://github.com/bcksl/ash_geo/compare/v0.1.0...v0.1.1) (2023-06-02)
 
 
