@@ -31,24 +31,12 @@ defmodule AshGeo.GeoAny.Use do
       with atom keys before attempting decoding with `Geo.JSON`.
       """
       def cast_input(%{type: _} = value, constraints) do
-        with {:ok, value} <- Jason.encode(value),
-             {:ok, value} <- Jason.decode(value),
-             {:ok, value} <- Geo.JSON.decode(value) do
-          {:ok, value}
-        else
-          # err -> err
-          _ -> :error
-        end
+        AshGeo.GeoJson.cast_input(value, constraints)
       end
 
       @doc "Try decoding with `Geo.JSON`."
       def cast_input(value, constraints) when is_map(value) and not is_struct(value) do
-        case Geo.JSON.decode(value) do
-          {:ok, _} = res -> res
-          # XXX blocked on https://github.com/ash-project/ash/issues/365
-          # err -> err
-          _ -> :error
-        end
+        AshGeo.GeoJson.cast_input(value, constraints)
       end
 
       @doc "Try decoding with `Geo.WKB` and `Geo.WKT`, in the order specified by `:prefer`."
@@ -57,12 +45,12 @@ defmodule AshGeo.GeoAny.Use do
 
         {first, second} =
           case prefer do
-            :wkt -> {&Geo.WKT.decode/1, &Geo.WKB.decode/1}
-            :wkb -> {&Geo.WKB.decode/1, &Geo.WKT.decode/1}
+            :wkt -> {AshGeo.GeoWkt, AshGeo.GeoWkb}
+            :wkb -> {AshGeo.GeoWkb, AshGeo.GeoWkt}
           end
 
-        case first.(value) do
-          {:error, _} -> second.(value)
+        case first.cast_input(value, constraints) do
+          {:error, _} -> second.cast_input(value, constraints)
           res -> res
         end
       end
