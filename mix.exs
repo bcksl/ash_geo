@@ -75,7 +75,6 @@ defmodule AshGeo.MixProject do
       maintainers: ~w(bcksl),
       licenses: ~w(MIT),
       links: %{
-        Documentation: "https://hexdocs.pm/ash_geo",
         GitHub: @source_url
       }
     ]
