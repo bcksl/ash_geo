@@ -60,7 +60,7 @@ defmodule AshGeo.MixProject do
       main: "readme",
       source_ref: "v#{@version}",
       formatters: ~w(html epub),
-      extras: ~w(README.md)
+      extras: ~w(README.md CHANGELOG.md)
     ]
   end
 
