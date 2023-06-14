@@ -1,13 +1,14 @@
 defmodule AshGeo.MixProject do
   use Mix.Project
 
+  @name :ash_geo
   @version "0.1.2"
-  @source_url "https://github.com/bcksl/ash_geo"
   @description "Tools for using Geo, Topo and PostGIS with Ash"
+  @source_url "https://github.com/bcksl/ash_geo"
 
   def project do
     [
-      app: :ash_geo,
+      app: @name,
       version: @version,
       elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
@@ -18,7 +19,7 @@ defmodule AshGeo.MixProject do
       package: package(),
       test_coverage: test_coverage(),
       docs: docs(),
-      name: "AshGeo",
+      name: Macro.camelize("#{@name}"),
       description: @description
     ]
   end
@@ -36,9 +37,9 @@ defmodule AshGeo.MixProject do
   defp deps do
     [
       {:jason, "~> 1.4"},
-      {:geo, "~> 3.4"},
+      {:geo, "~> 3.5"},
       {:topo, "~> 1.0"},
-      {:ash, "~> 2.9"},
+      {:ash, "~> 2.10"},
       {:geo_postgis, "~> 3.4", only: :test},
       {:ash_postgres, "~> 1.3", only: :test},
 
@@ -48,10 +49,10 @@ defmodule AshGeo.MixProject do
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:sobelow, "~> 0.12.2", only: [:dev, :test], runtime: false},
       {:doctor, "~> 0.21.0", only: [:dev, :test], runtime: false},
-      {:excoveralls, "~> 0.6", only: :test},
+      {:excoveralls, "~> 0.16.1", only: :test},
       {:ex_check, "~> 0.15.0", only: [:dev, :test]},
       {:ex_doc, "~> 0.29.4", only: [:dev, :test], runtime: false},
-      {:git_ops, "~> 2.5.6", only: :dev}
+      {:git_ops, "~> 2.6", only: :dev}
     ]
   end
 
@@ -70,7 +71,7 @@ defmodule AshGeo.MixProject do
 
   defp package do
     [
-      name: "ash_geo",
+      name: "#{@name}",
       files: ~w(.formatter.exs config lib mix.exs README* LICENSE*),
       maintainers: ~w(bcksl),
       licenses: ~w(MIT),
@@ -91,6 +92,8 @@ defmodule AshGeo.MixProject do
     [
       check: :test,
       "hex.outdated": :test,
+      audit: :test,
+      "hex.audit": :test,
       format: :test,
       docs: :dev,
       dialyzer: :dev,
