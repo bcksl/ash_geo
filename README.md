@@ -128,6 +128,7 @@ The full documentation can be found [on HexDocs].
 - Replace validation macros with Spark DSL patches or similar.
 - Replace PostGIS `fragment` macros with custom predicates
   ([`ash#374`](https://github.com/ash-project/ash/issues/374))
+- Add datalayer-independent expression predicates backed by [Topo].
 - Add more informative error messages
   ([`ash#365`](https://github.com/ash-project/ash/issues/365)).
 
