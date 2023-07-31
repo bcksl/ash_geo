@@ -357,21 +357,32 @@ defmodule AshGeo.Test do
   end
 
   describe "Expressions: st_within" do
+    import Ash.Test
     alias AshGeo.Test.Resource.Area
 
     test "correctly queries point inside one polygon" do
-      Area.create!("POLYGON((30 0, 20 30, 0 10, 30 0))")
-      area2 = Area.create!("POLYGON((30 10, 40 40, 20 40, 10 20, 30 10))")
-      result = Area.containing!("POINT(30 30)")
+      Area.create!("POLYGON((30.0 0.0, 20.0 30.0, 0.0 10.0, 30.0 0.0))")
+
+      area2 =
+        strip_metadata(
+          Area.create!("POLYGON((30.0 10.0, 40.0 40.0, 20.0 40.0, 10.0 20.0, 30.0 10.0))")
+        )
+
+      result = strip_metadata(Area.containing!("POINT(30.0 30.0)"))
 
       assert length(result) == 1
       assert Enum.at(result, 0) == area2
     end
 
     test "correctly queries point inside both polygons" do
-      area1 = Area.create!("POLYGON((30 0, 20 30, 0 10, 30 0))")
-      area2 = Area.create!("POLYGON((30 10, 40 40, 20 40, 10 20, 30 10))")
-      result = Area.containing!("POINT(20 20)")
+      area1 = strip_metadata(Area.create!("POLYGON((30.0 0.0, 20.0 30.0, 0.0 10.0, 30.0 0.0))"))
+
+      area2 =
+        strip_metadata(
+          Area.create!("POLYGON((30.0 10.0, 40.0 40.0, 20.0 40.0, 10.0 20.0, 30.0 10.0))")
+        )
+
+      result = strip_metadata(Area.containing!("POINT(20.0 20.0)"))
 
       assert length(result) == 2
       assert Enum.at(result, 0) == area1
@@ -379,26 +390,38 @@ defmodule AshGeo.Test do
     end
 
     test "correctly queries point inside neither polygon" do
-      Area.create!("POLYGON((30 0, 20 30, 0 10, 30 0))")
-      Area.create!("POLYGON((30 10, 40 40, 20 40, 10 20, 30 10))")
-      result = Area.containing!("POINT(10 40)")
+      Area.create!("POLYGON((30.0 0.0, 20.0 30.0, 0.0 10.0, 30.0 0.0))")
+      Area.create!("POLYGON((30.0 10.0, 40.0 40.0, 20.0 40.0, 10.0 20.0, 30.0 10.0))")
+      result = Area.containing!("POINT(10.0 40.0)")
 
       assert result == []
     end
 
     test "correctly queries polygon inside one polygon" do
-      Area.create!("POLYGON((30 0, 20 30, 0 10, 30 0))")
-      area2 = Area.create!("POLYGON((30 10, 40 40, 20 40, 10 20, 30 10))")
-      result = Area.containing!("POLYGON((30 30, 31 31, 31 32, 30 30))")
+      Area.create!("POLYGON((30.0 0.0, 20.0 30.0, 0.0 10.0, 30.0 0.0))")
+
+      area2 =
+        strip_metadata(
+          Area.create!("POLYGON((30.0 10.0, 40.0 40.0, 20.0 40.0, 10.0 20.0, 30.0 10.0))")
+        )
+
+      result =
+        strip_metadata(Area.containing!("POLYGON((30.0 30.0, 31.0 31.0, 31.0 32.0, 30.0 30.0))"))
 
       assert length(result) == 1
       assert Enum.at(result, 0) == area2
     end
 
     test "correctly queries polygon inside both polygons" do
-      area1 = Area.create!("POLYGON((30 0, 20 30, 0 10, 30 0))")
-      area2 = Area.create!("POLYGON((30 10, 40 40, 20 40, 10 20, 30 10))")
-      result = Area.containing!("POLYGON((20 20, 21 21, 21 22, 20 20))")
+      area1 = strip_metadata(Area.create!("POLYGON((30.0 0.0, 20.0 30.0, 0.0 10.0, 30.0 0.0))"))
+
+      area2 =
+        strip_metadata(
+          Area.create!("POLYGON((30.0 10.0, 40.0 40.0, 20.0 40.0, 10.0 20.0, 30.0 10.0))")
+        )
+
+      result =
+        strip_metadata(Area.containing!("POLYGON((20.0 20.0, 21.0 21.0, 21.0 22.0, 20.0 20.0))"))
 
       assert length(result) == 2
       assert Enum.at(result, 0) == area1
@@ -406,9 +429,9 @@ defmodule AshGeo.Test do
     end
 
     test "correctly queries polygon inside neither polygon" do
-      Area.create!("POLYGON((30 0, 20 30, 0 10, 30 0))")
-      Area.create!("POLYGON((30 10, 40 40, 20 40, 10 20, 30 10))")
-      result = Area.containing!("POLYGON((42 0, 0 42, 100 42, 42 0))")
+      Area.create!("POLYGON((30.0 0.0, 20.0 30.0, 0.0 10.0, 30.0 0.0))")
+      Area.create!("POLYGON((30.0 10.0, 40.0 40.0, 20.0 40.0, 10.0 20.0, 30.0 10.0))")
+      result = Area.containing!("POLYGON((42.0 0.0, 0.0 42.0, 100.0 42.0, 42.0 0.0))")
 
       assert result == []
     end
