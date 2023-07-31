@@ -51,7 +51,7 @@ defmodule AshGeo.MixProject do
       {:doctor, "~> 0.21.0", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.16.1", only: :test},
       {:ex_check, "~> 0.15.0", only: [:dev, :test]},
-      {:ex_doc, "~> 0.29.4", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.30.3", only: [:dev, :test], runtime: false},
       {:git_ops, "~> 2.6", only: :dev}
     ]
   end
