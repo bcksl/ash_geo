@@ -5,6 +5,17 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [v0.1.3](https://github.com/bcksl/ash_geo/compare/v0.1.2...v0.1.3) (2023-07-31)
+
+
+
+
+### Bug Fixes:
+
+* remove reduntant `docs` task from `mix check`
+
+* ensure ci gets triggered on release
+
 ## [v0.1.2](https://github.com/bcksl/ash_geo/compare/v0.1.1...v0.1.2) (2023-06-07)
 
 

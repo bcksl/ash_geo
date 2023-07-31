@@ -2,7 +2,7 @@ defmodule AshGeo.MixProject do
   use Mix.Project
 
   @name :ash_geo
-  @version "0.1.2"
+  @version "0.1.3"
   @description "Tools for using Geo, Topo and PostGIS with Ash"
   @source_url "https://github.com/bcksl/ash_geo"
 
