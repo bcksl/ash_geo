@@ -75,7 +75,7 @@ config :cool_app, CoolApp.Repo, types: CoolApp.PostgresTypes
 defmodule Area do
   use Ash.Resource, data_layer: AshPostgres.DataLayer
 
-  import AshGeo.Expr
+  import AshGeo.Postgis
 
   attributes do
     uuid_primary_key :id,
@@ -83,7 +83,7 @@ defmodule Area do
   end
 
   actions do
-    action :create do
+    create :create do
       argument :geom, :geo_any
 
       change set_attribute(:geom, arg(:geom))
