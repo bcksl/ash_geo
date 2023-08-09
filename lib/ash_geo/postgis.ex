@@ -5,7 +5,7 @@ defmodule AshGeo.Postgis do
   @moduledoc since: "0.1.0"
 
   defmacro st_transform(wkt, srid) do
-    quote do: expr(fragment("ST_Transform(?, ?)", unquote(wkt), unquote(srid)))
+    quote do: expr(fragment("ST_Transform(?,?)", unquote(wkt), unquote(srid)))
   end
 
   defmacro st_distance(geometryA, geometryB) do
@@ -16,12 +16,15 @@ defmodule AshGeo.Postgis do
   Casts the 2 geometries given to geographies in order to return distance in meters.
   """
   defmacro st_distance_in_meters(geometryA, geometryB) do
-    quote do:
-            fragment(
-              "ST_Distance(?::geography, ?::geography)",
-              unquote(geometryA),
-              unquote(geometryB)
-            )
+    quote do
+      expr(
+        fragment(
+          "ST_Distance(?::geography,?::geography)",
+          unquote(geometryA),
+          unquote(geometryB)
+        )
+      )
+    end
   end
 
   defmacro st_distancesphere(geometryA, geometryB) do
@@ -38,21 +41,32 @@ defmodule AshGeo.Postgis do
   end
 
   defmacro st_dwithin(geometryA, geometryB, float) do
-    quote do:
-            fragment("ST_DWithin(?,?,?)", unquote(geometryA), unquote(geometryB), unquote(float))
+    quote do
+      expr(
+        fragment(
+          "ST_DWithin(?,?,?)",
+          unquote(geometryA),
+          unquote(geometryB),
+          unquote(float)
+        )
+      )
+    end
   end
 
   @doc """
   Casts the 2 geometries given to geographies in order to check for distance in meters.
   """
   defmacro st_dwithin_in_meters(geometryA, geometryB, float) do
-    quote do:
-            fragment(
-              "ST_DWithin(?::geography, ?::geography, ?)",
-              unquote(geometryA),
-              unquote(geometryB),
-              unquote(float)
-            )
+    quote do
+      expr(
+        fragment(
+          "ST_DWithin(?::geography,?::geography,?)",
+          unquote(geometryA),
+          unquote(geometryB),
+          unquote(float)
+        )
+      )
+    end
   end
 
   defmacro st_equals(geometryA, geometryB) do
@@ -96,15 +110,16 @@ defmodule AshGeo.Postgis do
   end
 
   defmacro st_relate(geometryA, geometryB, intersectionPatternMatrix) do
-    quote do:
-            expr(
-              fragment(
-                "ST_Relate(?,?,?)",
-                unquote(geometryA),
-                unquote(geometryB),
-                unquote(intersectionPatternMatrix)
-              )
-            )
+    quote do
+      expr(
+        fragment(
+          "ST_Relate(?,?,?)",
+          unquote(geometryA),
+          unquote(geometryB),
+          unquote(intersectionPatternMatrix)
+        )
+      )
+    end
   end
 
   defmacro st_relate(geometryA, geometryB) do
@@ -132,14 +147,13 @@ defmodule AshGeo.Postgis do
   end
 
   defmacro st_buffer(geometry, double) do
-    quote do: expr(fragment("ST_Buffer(?, ?)", unquote(geometry), unquote(double)))
+    quote do: expr(fragment("ST_Buffer(?,?)", unquote(geometry), unquote(double)))
   end
 
   defmacro st_buffer(geometry, double, integer) do
-    quote do:
-            expr(
-              fragment("ST_Buffer(?, ?, ?)", unquote(geometry), unquote(double), unquote(integer))
-            )
+    quote do
+      expr(fragment("ST_Buffer(?,?,?)", unquote(geometry), unquote(double), unquote(integer)))
+    end
   end
 
   defmacro st_convex_hull(geometry) do
@@ -147,7 +161,7 @@ defmodule AshGeo.Postgis do
   end
 
   defmacro st_intersection(geometryA, geometryB) do
-    quote do: expr(fragment("ST_Intersection(?, ?)", unquote(geometryA), unquote(geometryB)))
+    quote do: expr(fragment("ST_Intersection(?,?)", unquote(geometryA), unquote(geometryB)))
   end
 
   defmacro st_shift_longitude(geometry) do
@@ -195,11 +209,11 @@ defmodule AshGeo.Postgis do
   end
 
   defmacro st_set_srid(geometry, srid) do
-    quote do: expr(fragment("ST_SetSRID(?, ?)", unquote(geometry), unquote(srid)))
+    quote do: expr(fragment("ST_SetSRID(?,?)", unquote(geometry), unquote(srid)))
   end
 
   defmacro st_make_box_2d(geometryA, geometryB) do
-    quote do: expr(fragment("ST_MakeBox2D(?, ?)", unquote(geometryA), unquote(geometryB)))
+    quote do: expr(fragment("ST_MakeBox2D(?,?)", unquote(geometryA), unquote(geometryB)))
   end
 
   defmacro st_dimension(geometry) do
@@ -227,7 +241,7 @@ defmodule AshGeo.Postgis do
   end
 
   defmacro st_geometry_n(geometry, int) do
-    quote do: expr(fragment("ST_GeometryN(?, ?)", unquote(geometry), unquote(int)))
+    quote do: expr(fragment("ST_GeometryN(?,?)", unquote(geometry), unquote(int)))
   end
 
   defmacro st_num_points(geometry) do
@@ -235,11 +249,11 @@ defmodule AshGeo.Postgis do
   end
 
   defmacro st_point_n(geometry, int) do
-    quote do: expr(fragment("ST_PointN(?, ?)", unquote(geometry), unquote(int)))
+    quote do: expr(fragment("ST_PointN(?,?)", unquote(geometry), unquote(int)))
   end
 
   defmacro st_point(x, y) do
-    quote do: expr(fragment("ST_Point(?, ?)", unquote(x), unquote(y)))
+    quote do: expr(fragment("ST_Point(?,?)", unquote(x), unquote(y)))
   end
 
   defmacro st_exterior_ring(geometry) do
@@ -255,7 +269,7 @@ defmodule AshGeo.Postgis do
   end
 
   defmacro st_interior_ring_n(geometry, int) do
-    quote do: expr(fragment("ST_InteriorRingN(?, ?)", unquote(geometry), unquote(int)))
+    quote do: expr(fragment("ST_InteriorRingN(?,?)", unquote(geometry), unquote(int)))
   end
 
   defmacro st_end_point(geometry) do
@@ -287,91 +301,91 @@ defmodule AshGeo.Postgis do
   end
 
   defmacro st_geom_from_text(text, srid \\ -1) do
-    quote do: expr(fragment("ST_GeomFromText(?, ?)", unquote(text), unquote(srid)))
+    quote do: expr(fragment("ST_GeomFromText(?,?)", unquote(text), unquote(srid)))
   end
 
   defmacro st_point_from_text(text, srid \\ -1) do
-    quote do: expr(fragment("ST_PointFromText(?, ?)", unquote(text), unquote(srid)))
+    quote do: expr(fragment("ST_PointFromText(?,?)", unquote(text), unquote(srid)))
   end
 
   defmacro st_line_from_text(text, srid \\ -1) do
-    quote do: expr(fragment("ST_LineFromText(?, ?)", unquote(text), unquote(srid)))
+    quote do: expr(fragment("ST_LineFromText(?,?)", unquote(text), unquote(srid)))
   end
 
   defmacro st_linestring_from_text(text, srid \\ -1) do
-    quote do: expr(fragment("ST_LinestringFromText(?, ?)", unquote(text), unquote(srid)))
+    quote do: expr(fragment("ST_LinestringFromText(?,?)", unquote(text), unquote(srid)))
   end
 
   defmacro st_polygon_from_text(text, srid \\ -1) do
-    quote do: expr(fragment("ST_PolygonFromText(?, ?)", unquote(text), unquote(srid)))
+    quote do: expr(fragment("ST_PolygonFromText(?,?)", unquote(text), unquote(srid)))
   end
 
   defmacro st_m_point_from_text(text, srid \\ -1) do
-    quote do: expr(fragment("ST_MPointFromText(?, ?)", unquote(text), unquote(srid)))
+    quote do: expr(fragment("ST_MPointFromText(?,?)", unquote(text), unquote(srid)))
   end
 
   defmacro st_m_line_from_text(text, srid \\ -1) do
-    quote do: expr(fragment("ST_MLineFromText(?, ?)", unquote(text), unquote(srid)))
+    quote do: expr(fragment("ST_MLineFromText(?,?)", unquote(text), unquote(srid)))
   end
 
   defmacro st_m_poly_from_text(text, srid \\ -1) do
-    quote do: expr(fragment("ST_MPolyFromText(?, ?)", unquote(text), unquote(srid)))
+    quote do: expr(fragment("ST_MPolyFromText(?,?)", unquote(text), unquote(srid)))
   end
 
   defmacro st_m_geom_coll_from_text(text, srid \\ -1) do
-    quote do: expr(fragment("ST_GeomCollFromText(?, ?)", unquote(text), unquote(srid)))
+    quote do: expr(fragment("ST_GeomCollFromText(?,?)", unquote(text), unquote(srid)))
   end
 
   defmacro st_m_geom_from_wkb(bytea, srid \\ -1) do
-    quote do: expr(fragment("ST_GeomFromWKB(?, ?)", unquote(bytea), unquote(srid)))
+    quote do: expr(fragment("ST_GeomFromWKB(?,?)", unquote(bytea), unquote(srid)))
   end
 
   defmacro st_m_geometry_from_wkb(bytea, srid \\ -1) do
-    quote do: expr(fragment("ST_GeometryFromWKB(?, ?)", unquote(bytea), unquote(srid)))
+    quote do: expr(fragment("ST_GeometryFromWKB(?,?)", unquote(bytea), unquote(srid)))
   end
 
   defmacro st_point_from_wkb(bytea, srid \\ -1) do
-    quote do: expr(fragment("ST_PointFromWKB(?, ?)", unquote(bytea), unquote(srid)))
+    quote do: expr(fragment("ST_PointFromWKB(?,?)", unquote(bytea), unquote(srid)))
   end
 
   defmacro st_line_from_wkb(bytea, srid \\ -1) do
-    quote do: expr(fragment("ST_LineFromWKB(?, ?)", unquote(bytea), unquote(srid)))
+    quote do: expr(fragment("ST_LineFromWKB(?,?)", unquote(bytea), unquote(srid)))
   end
 
   defmacro st_linestring_from_wkb(bytea, srid \\ -1) do
-    quote do: expr(fragment("ST_LinestringFromWKB(?, ?)", unquote(bytea), unquote(srid)))
+    quote do: expr(fragment("ST_LinestringFromWKB(?,?)", unquote(bytea), unquote(srid)))
   end
 
   defmacro st_poly_from_wkb(bytea, srid \\ -1) do
-    quote do: expr(fragment("ST_PolyFromWKB(?, ?)", unquote(bytea), unquote(srid)))
+    quote do: expr(fragment("ST_PolyFromWKB(?,?)", unquote(bytea), unquote(srid)))
   end
 
   defmacro st_polygon_from_wkb(bytea, srid \\ -1) do
-    quote do: expr(fragment("ST_PolygonFromWKB(?, ?)", unquote(bytea), unquote(srid)))
+    quote do: expr(fragment("ST_PolygonFromWKB(?,?)", unquote(bytea), unquote(srid)))
   end
 
   defmacro st_m_point_from_wkb(bytea, srid \\ -1) do
-    quote do: expr(fragment("ST_MPointFromWKB(?, ?)", unquote(bytea), unquote(srid)))
+    quote do: expr(fragment("ST_MPointFromWKB(?,?)", unquote(bytea), unquote(srid)))
   end
 
   defmacro st_m_line_from_wkb(bytea, srid \\ -1) do
-    quote do: expr(fragment("ST_MLineFromWKB(?, ?)", unquote(bytea), unquote(srid)))
+    quote do: expr(fragment("ST_MLineFromWKB(?,?)", unquote(bytea), unquote(srid)))
   end
 
   defmacro st_m_poly_from_wkb(bytea, srid \\ -1) do
-    quote do: expr(fragment("ST_MPolyFromWKB(?, ?)", unquote(bytea), unquote(srid)))
+    quote do: expr(fragment("ST_MPolyFromWKB(?,?)", unquote(bytea), unquote(srid)))
   end
 
   defmacro st_geom_coll_from_wkb(bytea, srid \\ -1) do
-    quote do: expr(fragment("ST_GeomCollFromWKB(?, ?)", unquote(bytea), unquote(srid)))
+    quote do: expr(fragment("ST_GeomCollFromWKB(?,?)", unquote(bytea), unquote(srid)))
   end
 
   defmacro st_bd_poly_from_text(wkt, srid) do
-    quote do: expr(fragment("ST_BdPolyFromText(?, ?)", unquote(wkt), unquote(srid)))
+    quote do: expr(fragment("ST_BdPolyFromText(?,?)", unquote(wkt), unquote(srid)))
   end
 
   defmacro st_bd_m_poly_from_text(wkt, srid) do
-    quote do: expr(fragment("ST_BdMPolyFromText(?, ?)", unquote(wkt), unquote(srid)))
+    quote do: expr(fragment("ST_BdMPolyFromText(?,?)", unquote(wkt), unquote(srid)))
   end
 
   defmacro st_flip_coordinates(geometryA) do
@@ -383,19 +397,20 @@ defmodule AshGeo.Postgis do
   end
 
   defmacro st_generate_points(geometryA, npoints, seed) do
-    quote do:
-            expr(
-              fragment(
-                "ST_GeneratePoints(?,?,?)",
-                unquote(geometryA),
-                unquote(npoints),
-                unquote(seed)
-              )
-            )
+    quote do
+      expr(
+        fragment(
+          "ST_GeneratePoints(?,?,?)",
+          unquote(geometryA),
+          unquote(npoints),
+          unquote(seed)
+        )
+      )
+    end
   end
 
   defmacro st_extent(geometry) do
-    quote do: expr(fragment("ST_EXTENT(?)::geometry", unquote(geometry)))
+    quote do: expr(fragment("ST_Extent(?)::geometry", unquote(geometry)))
   end
 
   defmacro st_build_area(geometryA) do
