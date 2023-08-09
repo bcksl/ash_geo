@@ -4,6 +4,7 @@
     deps_audit: "mix deps.audit",
     sobelow: "mix sobelow --config",
     migrations: "mix ash_postgres.generate_migrations --check",
-    coveralls: "mix coveralls"
+    coveralls: "mix coveralls",
+    ex_unit: false
   ]
 ]
