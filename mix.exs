@@ -39,10 +39,10 @@ defmodule AshGeo.MixProject do
     [
       {:jason, "~> 1.4"},
       {:geo, "~> 3.5"},
-      {:topo, "~> 1.0"},
       {:ash, "~> 2.13"},
       {:geo_postgis, "~> 3.4", only: :test},
       {:ash_postgres, "~> 1.3", only: :test},
+      {:topo, "~> 1.0", only: :test},
 
       # Testing, analysis, documentation, and release tools
       {:mix_audit, "~> 2.1", only: [:dev, :test], runtime: false},
