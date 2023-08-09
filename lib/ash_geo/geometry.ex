@@ -6,7 +6,6 @@ defmodule AshGeo.Geometry.Use do
     doc: """
     Allowed `Geo` types
 
-
     #### Examples
 
     ```elixir
@@ -29,10 +28,38 @@ defmodule AshGeo.Geometry.Use do
     type: {:or, [{:list, {:or, [:module, :atom]}}, {:or, [:module, :atom]}]}
   ]
 
+  @check_srid [
+    doc: """
+    SRID to check on the geometry
+
+    #### Examples
+
+    ```elixir
+    use AshGeo.Geometry, check_srid: 4326
+    ```
+    """,
+    type: :integer
+  ]
+
+  @force_srid [
+    doc: """
+    SRID to force on the geometry
+
+    #### Examples
+
+    ```elixir
+    use AshGeo.Geometry, force_srid: 4326
+    ```
+    """,
+    type: :integer
+  ]
+
   @opts_schema [
     storage_type: [
       doc: """
       Column type in the database
+
+      *May **NOT** be overridden using `:constraints`.*
 
       #### Examples
 
@@ -42,11 +69,15 @@ defmodule AshGeo.Geometry.Use do
       """,
       type: :atom
     ],
-    geo_types: @geo_types
+    geo_types: @geo_types,
+    force_srid: @force_srid,
+    check_srid: @check_srid
   ]
 
   @constraints_schema [
-    geo_types: @geo_types
+    geo_types: @geo_types,
+    force_srid: @force_srid,
+    check_srid: @check_srid
   ]
 
   @doc false
@@ -62,6 +93,8 @@ defmodule AshGeo.Geometry.Use do
             constraints_schema: @constraints_schema
           ] do
       opts = Spark.OptionsHelpers.validate!(opts, opts_schema)
+
+      static_constraints = Keyword.drop(opts, [:storage_type])
 
       storage_type = opts[:storage_type] || :geometry
       geo_types = opts[:geo_types]
@@ -84,14 +117,9 @@ defmodule AshGeo.Geometry.Use do
       def apply_constraints(nil, _), do: :ok
 
       def apply_constraints(%struct{} = value, constraints) when is_geo(struct) do
-        errs =
-          Enum.reduce(constraints, [], fn {:geo_types, geo_types}, errs ->
-            if Enum.any?(List.wrap(geo_types), &(struct in [&1, geo_type_aliases()[&1]])) do
-              errs
-            else
-              [constraint_error_keyword(geo_types, value) | errs]
-            end
-          end)
+        {value, errs} =
+          Keyword.merge(unquote(static_constraints), constraints)
+          |> Enum.reduce({value, []}, &apply_constraint/2)
 
         case errs do
           [] -> {:ok, value}
@@ -100,13 +128,50 @@ defmodule AshGeo.Geometry.Use do
       end
 
       def apply_constraints(value, _) do
-        {:error, [constraint_error_keyword(AshGeo.geo_types(), value)]}
+        {:error, [constraint_error_geo_types(AshGeo.geo_types(), value)]}
       end
 
-      defp constraint_error_keyword(geo_types, value) do
+      defp apply_constraint(
+             {:check_srid, srid},
+             {value, errs}
+           ) do
+        if value.srid == srid do
+          {value, errs}
+        else
+          {value, constraint_error_check_srid(srid, value)}
+        end
+      end
+
+      defp apply_constraint(
+             {:force_srid, srid},
+             {value, errs}
+           ) do
+        {%{value | srid: srid}, errs}
+      end
+
+      defp apply_constraint(
+             {:geo_types, geo_types},
+             {%struct{} = value, errs}
+           ) do
+        if Enum.any?(List.wrap(geo_types), &(struct in [&1, geo_type_aliases()[&1]])) do
+          {value, errs}
+        else
+          {value, [constraint_error_geo_types(geo_types, value) | errs]}
+        end
+      end
+
+      defp constraint_error_geo_types(geo_types, value) do
         [
           message: "must be a struct with type among: %{types}, got: %{value}",
           types: Enum.map_join(geo_types, ", ", &inspect/1),
+          value: value
+        ]
+      end
+
+      defp constraint_error_check_srid(srid, value) do
+        [
+          message: "must be a geometry with SRID %{srid}, got: %{value}",
+          srid: srid,
           value: value
         ]
       end
@@ -148,23 +213,44 @@ defmodule AshGeo.Geometry do
   Base geometry type
 
   To create a constrained geometry type, `use AshGeo.Geometry` accepts several
-  options that may be useful.
+  options that may be useful. Options provided to `use` define constraints that
+  are applied statically to a new type instance, and may be further added or
+  overridden using `:constraints` on instances of that type, with the exception
+  of `:storage_type`.
 
-  ### Options
-
-  #{Spark.OptionsHelpers.docs(AshGeo.Geometry.Use.opts_schema())}
-
-  Constraints:
-
-  #{Spark.OptionsHelpers.docs(AshGeo.Geometry.Use.constraints_schema())}
+  ### Example
 
   ```elixir
-  defmodule App.GeometryPoint26918 do
+  defmodule App.Type.Point26918 do
     use AshGeo.Geometry,
       storage_type: :"geometry(Point,26918)",
       geo_types: :point
   end
+
+  defmodule App.Resource.PointOfInterest do
+    alias App.Type.Point26918
+
+    attributes do
+      attribute :name, :string
+      attribute :location, Point26918, allow_nil?: false
+    end
+
+    actions do
+      create :create do
+        argument :location, Point26918 do
+          allow_nil? false
+          constraits: [force_srid: 26918]
+        end
+
+        change set_attribute(:location, arg(:location))
+      end
+    end
+  end
   ```
+
+  ## Options
+
+  #{Spark.OptionsHelpers.docs(AshGeo.Geometry.Use.opts_schema())}
   """
   @moduledoc since: "0.1.0"
 
