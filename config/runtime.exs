@@ -4,7 +4,7 @@ if Mix.env() == :test do
   # Postgrex: Geo.PostGIS types
   Postgrex.Types.define(
     AshGeo.Test.PostgresTypes,
-    [Geo.PostGIS.Extension] ++ Ecto.Adapters.Postgres.extensions(),
+    [Geo.PostGIS.Extension | Ecto.Adapters.Postgres.extensions()],
     json: Jason
   )
 
