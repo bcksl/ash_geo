@@ -44,16 +44,16 @@ defmodule AshGeo.MixProject do
       {:geo_postgis, "~> 3.4", only: :test},
       {:ash_postgres, "~> 1.3", only: :test},
 
-      # Testing, documentation, and release tools
+      # Testing, analysis, documentation, and release tools
       {:mix_audit, "~> 2.1", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.3", only: [:dev, :test], runtime: false},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:sobelow, "~> 0.13.0", only: [:dev, :test], runtime: false},
       {:doctor, "~> 0.21.0", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.16.1", only: :test, runtime: false},
-      {:ex_check, "~> 0.15.0", only: [:dev, :test]},
+      {:ex_check, "~> 0.15.0", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.30.4", only: [:dev, :test], runtime: false},
-      {:git_ops, "~> 2.6", only: :dev}
+      {:git_ops, "~> 2.6", only: :dev, runtime: false}
     ]
   end
 
