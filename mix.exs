@@ -15,6 +15,7 @@ defmodule AshGeo.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       preferred_cli_env: preferred_cli_env(),
       cli: cli(),
+      aliases: aliases(),
       deps: deps(),
       package: package(),
       test_coverage: test_coverage(),
@@ -110,6 +111,12 @@ defmodule AshGeo.MixProject do
       "ash_postgres.generate_migrations": :test,
       "ash_postgres.migrate": :test,
       "ash_postgres.drop": :test
+    ]
+  end
+
+  defp aliases do
+    [
+      test: ["ash_postgres.create --quiet", "ash_postgres.migrate --quiet", "test"]
     ]
   end
 end
