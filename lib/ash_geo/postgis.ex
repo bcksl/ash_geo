@@ -4,6 +4,24 @@ defmodule AshGeo.Postgis do
   """
   @moduledoc since: "0.1.0"
 
+  @doc """
+  Create
+  """
+  defmacro gis_index(column, name \\ nil) do
+    quote bind_quoted: [column: column, name: name] do
+      name =
+        case name do
+          nil -> :"#{column}_geom_idx"
+          name -> name
+        end
+
+      statement unquote(name) do
+        up "create index #{unquote(name)} on #{unquote(column)} using gist (#{unquote(column)});"
+        down "drop index #{unquote(name)};"
+      end
+    end
+  end
+
   defmacro st_transform(wkt, srid) do
     quote do: expr(fragment("ST_Transform(?,?)", unquote(wkt), unquote(srid)))
   end

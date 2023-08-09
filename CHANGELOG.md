@@ -5,6 +5,25 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [v0.2.0](https://github.com/bcksl/ash_geo/compare/v0.1.3...v0.2.0) (2023-08-09)
+
+
+
+
+### Features:
+
+* add `check_srid` and `force_srid` to geometry
+
+### Bug Fixes:
+
+* make `topo` also an optional dependency
+
+* missing `expr` on `fragment`
+
+### Improvements:
+
+* add `test` alias for `mix` to create and migrate
+
 ## [v0.1.3](https://github.com/bcksl/ash_geo/compare/v0.1.2...v0.1.3) (2023-07-31)
 
 
