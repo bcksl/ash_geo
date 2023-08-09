@@ -9,11 +9,11 @@ defmodule AshGeo.Test.Repo do
     [
       "uuid-ossp",
       "citext",
-      "postgis",
-      "postgis_sfcgal",
       "fuzzystrmatch",
       "address_standardizer",
       "address_standardizer_data_us",
+      "postgis",
+      "postgis_sfcgal",
       "postgis_tiger_geocoder",
       "postgis_topology",
       "postgis_raster"

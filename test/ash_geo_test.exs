@@ -2,8 +2,14 @@ defmodule AshGeo.Test do
   use ExUnit.Case
   doctest AshGeo
 
-  alias AshGeo.Test.TestStruct
   alias Ash.Changeset
+  alias AshGeo.Test.Repo
+  alias AshGeo.Test.Resource.Constraint
+  alias AshGeo.Test.Resource.Validation
+  alias AshGeo.Test.Resource.Geom
+  alias AshGeo.Test.TestStruct
+  alias AshGeo.{GeoWkb, GeoWkt, GeoJson, GeoAny}
+  alias AshGeo.Validation.ArgumentStructType
 
   def checkout(_ctx \\ nil) do
     Ecto.Adapters.SQL.Sandbox.checkout(AshGeo.Test.Repo)
@@ -13,21 +19,21 @@ defmodule AshGeo.Test do
 
   describe "GeoJson" do
     test "casts input from nil" do
-      assert AshGeo.GeoJson.cast_input(nil, []) == {:ok, nil}
+      assert GeoJson.cast_input(nil, []) == {:ok, nil}
     end
 
     test "casts input from atom-keyed map" do
-      assert AshGeo.GeoJson.cast_input(%{type: "Point", coordinates: [42, 42]}, []) ==
+      assert GeoJson.cast_input(%{type: "Point", coordinates: [42, 42]}, []) ==
                {:ok, %Geo.Point{coordinates: {42, 42}, srid: nil, properties: %{}}}
     end
 
     test "casts input from string-keyed map" do
-      assert AshGeo.GeoJson.cast_input(%{"type" => "Point", "coordinates" => [42, 42]}, []) ==
+      assert GeoJson.cast_input(%{"type" => "Point", "coordinates" => [42, 42]}, []) ==
                {:ok, %Geo.Point{coordinates: {42, 42}, srid: nil, properties: %{}}}
     end
 
     test "casts input from Geo struct" do
-      assert AshGeo.GeoJson.cast_input(
+      assert GeoJson.cast_input(
                %Geo.Point{coordinates: {42, 42}, srid: nil, properties: %{}},
                []
              ) ==
@@ -35,7 +41,7 @@ defmodule AshGeo.Test do
     end
 
     test "casts stored from Geo struct" do
-      assert AshGeo.GeoJson.cast_stored(
+      assert GeoJson.cast_stored(
                %Geo.Point{coordinates: {42, 42}, srid: nil, properties: %{}},
                []
              ) ==
@@ -43,7 +49,7 @@ defmodule AshGeo.Test do
     end
 
     test "dumps native from Geo struct" do
-      assert AshGeo.GeoJson.dump_to_native(
+      assert GeoJson.dump_to_native(
                %Geo.Point{coordinates: {42, 42}, srid: nil, properties: %{}},
                []
              ) ==
@@ -51,31 +57,31 @@ defmodule AshGeo.Test do
     end
 
     test "rejects input from WKB binary" do
-      assert AshGeo.GeoJson.cast_input("000000000140450000000000004045000000000000", []) ==
+      assert GeoJson.cast_input("000000000140450000000000004045000000000000", []) ==
                :error
     end
 
     test "rejects input from WKT binary" do
-      assert AshGeo.GeoJson.cast_input("POINT(42 42)", []) == :error
+      assert GeoJson.cast_input("POINT(42 42)", []) == :error
     end
 
     test "rejects input from unknown struct" do
-      assert AshGeo.GeoJson.cast_input(%AshGeo.Test.TestStruct{}, []) == :error
+      assert GeoJson.cast_input(%TestStruct{}, []) == :error
     end
   end
 
-  describe "GeoWKT" do
+  describe "GeoWkt" do
     test "casts input from nil" do
-      assert AshGeo.GeoWkt.cast_input(nil, []) == {:ok, nil}
+      assert GeoWkt.cast_input(nil, []) == {:ok, nil}
     end
 
     test "casts input from WKT binary" do
-      assert AshGeo.GeoAny.cast_input("POINT(42 42)", []) ==
+      assert GeoWkt.cast_input("POINT(42 42)", []) ==
                {:ok, %Geo.Point{coordinates: {42, 42}, srid: nil, properties: %{}}}
     end
 
     test "casts input from Geo struct" do
-      assert AshGeo.GeoWkt.cast_input(
+      assert GeoWkt.cast_input(
                %Geo.Point{coordinates: {42, 42}, srid: nil, properties: %{}},
                []
              ) ==
@@ -83,7 +89,7 @@ defmodule AshGeo.Test do
     end
 
     test "casts stored from Geo struct" do
-      assert AshGeo.GeoWkt.cast_stored(
+      assert GeoWkt.cast_stored(
                %Geo.Point{coordinates: {42, 42}, srid: nil, properties: %{}},
                []
              ) ==
@@ -91,7 +97,7 @@ defmodule AshGeo.Test do
     end
 
     test "dumps native from Geo struct" do
-      assert AshGeo.GeoWkt.dump_to_native(
+      assert GeoWkt.dump_to_native(
                %Geo.Point{coordinates: {42, 42}, srid: nil, properties: %{}},
                []
              ) ==
@@ -99,18 +105,18 @@ defmodule AshGeo.Test do
     end
   end
 
-  describe "GeoWKB" do
+  describe "GeoWkb" do
     test "casts input from nil" do
-      assert AshGeo.GeoWkb.cast_input(nil, []) == {:ok, nil}
+      assert GeoWkb.cast_input(nil, []) == {:ok, nil}
     end
 
     test "casts input from WKB binary" do
-      assert AshGeo.GeoAny.cast_input("000000000140450000000000004045000000000000", []) ==
+      assert GeoWkb.cast_input("000000000140450000000000004045000000000000", []) ==
                {:ok, %Geo.Point{coordinates: {42, 42}, srid: nil, properties: %{}}}
     end
 
     test "casts input from Geo struct" do
-      assert AshGeo.GeoWkb.cast_input(
+      assert GeoWkb.cast_input(
                %Geo.Point{coordinates: {42, 42}, srid: nil, properties: %{}},
                []
              ) ==
@@ -118,7 +124,7 @@ defmodule AshGeo.Test do
     end
 
     test "casts stored from Geo struct" do
-      assert AshGeo.GeoWkb.cast_stored(
+      assert GeoWkb.cast_stored(
                %Geo.Point{coordinates: {42, 42}, srid: nil, properties: %{}},
                []
              ) ==
@@ -126,7 +132,7 @@ defmodule AshGeo.Test do
     end
 
     test "dumps native from Geo struct" do
-      assert AshGeo.GeoWkb.dump_to_native(
+      assert GeoWkb.dump_to_native(
                %Geo.Point{coordinates: {42, 42}, srid: nil, properties: %{}},
                []
              ) ==
@@ -136,31 +142,31 @@ defmodule AshGeo.Test do
 
   describe "GeoAny" do
     test "casts input from nil" do
-      assert AshGeo.GeoAny.cast_input(nil, []) == {:ok, nil}
+      assert GeoAny.cast_input(nil, []) == {:ok, nil}
     end
 
     test "casts input from atom-keyed map" do
-      assert AshGeo.GeoAny.cast_input(%{type: "Point", coordinates: [42, 42]}, []) ==
+      assert GeoAny.cast_input(%{type: "Point", coordinates: [42, 42]}, []) ==
                {:ok, %Geo.Point{coordinates: {42, 42}, srid: nil, properties: %{}}}
     end
 
     test "casts input from string-keyed map" do
-      assert AshGeo.GeoAny.cast_input(%{"type" => "Point", "coordinates" => [42, 42]}, []) ==
+      assert GeoAny.cast_input(%{"type" => "Point", "coordinates" => [42, 42]}, []) ==
                {:ok, %Geo.Point{coordinates: {42, 42}, srid: nil, properties: %{}}}
     end
 
     test "casts input from WKT binary" do
-      assert AshGeo.GeoAny.cast_input("POINT(42 42)", []) ==
+      assert GeoAny.cast_input("POINT(42 42)", []) ==
                {:ok, %Geo.Point{coordinates: {42, 42}, srid: nil, properties: %{}}}
     end
 
     test "casts input from WKB binary" do
-      assert AshGeo.GeoAny.cast_input("000000000140450000000000004045000000000000", []) ==
+      assert GeoAny.cast_input("000000000140450000000000004045000000000000", []) ==
                {:ok, %Geo.Point{coordinates: {42, 42}, srid: nil, properties: %{}}}
     end
 
     test "casts input from Geo struct" do
-      assert AshGeo.GeoAny.cast_input(
+      assert GeoAny.cast_input(
                %Geo.Point{coordinates: {42, 42}, srid: nil, properties: %{}},
                []
              ) ==
@@ -168,7 +174,7 @@ defmodule AshGeo.Test do
     end
 
     test "casts stored from Geo struct" do
-      assert AshGeo.GeoAny.cast_stored(
+      assert GeoAny.cast_stored(
                %Geo.Point{coordinates: {42, 42}, srid: nil, properties: %{}},
                []
              ) ==
@@ -176,7 +182,7 @@ defmodule AshGeo.Test do
     end
 
     test "dumps native from Geo struct" do
-      assert AshGeo.GeoAny.dump_to_native(
+      assert GeoAny.dump_to_native(
                %Geo.Point{coordinates: {42, 42}, srid: nil, properties: %{}},
                []
              ) ==
@@ -185,9 +191,6 @@ defmodule AshGeo.Test do
   end
 
   describe "Argument struct validation" do
-    alias AshGeo.Validation.ArgumentStructType
-    alias AshGeo.Test.Resource.Validation
-
     test "accepts specified struct type" do
       cs =
         Ash.Changeset.new(Validation)
@@ -221,8 +224,6 @@ defmodule AshGeo.Test do
   end
 
   describe "Argument validations: is_point" do
-    alias AshGeo.Test.Resource.Validation
-
     test "accepts Geo.Point" do
       assert {:ok, _} = Validation.create_point("POINT(42 42)")
     end
@@ -259,8 +260,6 @@ defmodule AshGeo.Test do
   end
 
   describe "Topo validations: contains" do
-    alias AshGeo.Test.Resource.Validation
-
     test "accepts point within polygon" do
       cs =
         Changeset.new(Validation)
@@ -337,8 +336,6 @@ defmodule AshGeo.Test do
   end
 
   describe "Argument constraints: geo_types: [:point]" do
-    alias AshGeo.Test.Resource.Constraint
-
     test "accepts Geo.Point" do
       assert {:ok, _} = Constraint.create_point("POINT(42 42)")
     end
@@ -356,33 +353,66 @@ defmodule AshGeo.Test do
     end
   end
 
+  describe "Argument constraints: check_srid: 4326" do
+    test "accepts a point with SRID 4326" do
+      assert {:ok, _} = Constraint.create_check_srid_4326("SRID=4326;POINT(0 0)")
+    end
+
+    test "reject a point with SRID 26918" do
+      assert {:error, _} = Constraint.create_check_srid_4326("SRID=26918;POINT(0 0)")
+    end
+
+    test "reject a point with no SRID" do
+      assert {:error, _} = Constraint.create_check_srid_4326("POINT(0 0)")
+    end
+  end
+
+  describe "Argument constraints: force_srid: 4326" do
+    test "accepts a point with no SRID and forces 4326" do
+      assert {:ok, _} = Constraint.create_force_srid_4326("POINT(0 0)")
+      assert [item] = Repo.all(Constraint)
+      assert item.geom.srid == 4326
+    end
+
+    test "accepts a point with 26918 and forces 4326" do
+      assert {:ok, _} = Constraint.create_force_srid_4326("SRID=26918;POINT(0 0)")
+      assert [item] = Repo.all(Constraint)
+      assert item.geom.srid == 4326
+    end
+
+    test "accepts a point with 4326 and retains 4326" do
+      assert {:ok, _} = Constraint.create_force_srid_4326("SRID=4326;POINT(0 0)")
+      assert [item] = Repo.all(Constraint)
+      assert item.geom.srid == 4326
+    end
+  end
+
   describe "Expressions: st_within" do
     import Ash.Test
-    alias AshGeo.Test.Resource.Area
 
     test "correctly queries point inside one polygon" do
-      Area.create!("POLYGON((30.0 0.0, 20.0 30.0, 0.0 10.0, 30.0 0.0))")
+      Geom.create!("POLYGON((30.0 0.0, 20.0 30.0, 0.0 10.0, 30.0 0.0))")
 
       area2 =
         strip_metadata(
-          Area.create!("POLYGON((30.0 10.0, 40.0 40.0, 20.0 40.0, 10.0 20.0, 30.0 10.0))")
+          Geom.create!("POLYGON((30.0 10.0, 40.0 40.0, 20.0 40.0, 10.0 20.0, 30.0 10.0))")
         )
 
-      result = strip_metadata(Area.containing!("POINT(30.0 30.0)"))
+      result = strip_metadata(Geom.containing!("POINT(30.0 30.0)"))
 
       assert length(result) == 1
       assert Enum.at(result, 0) == area2
     end
 
     test "correctly queries point inside both polygons" do
-      area1 = strip_metadata(Area.create!("POLYGON((30.0 0.0, 20.0 30.0, 0.0 10.0, 30.0 0.0))"))
+      area1 = strip_metadata(Geom.create!("POLYGON((30.0 0.0, 20.0 30.0, 0.0 10.0, 30.0 0.0))"))
 
       area2 =
         strip_metadata(
-          Area.create!("POLYGON((30.0 10.0, 40.0 40.0, 20.0 40.0, 10.0 20.0, 30.0 10.0))")
+          Geom.create!("POLYGON((30.0 10.0, 40.0 40.0, 20.0 40.0, 10.0 20.0, 30.0 10.0))")
         )
 
-      result = strip_metadata(Area.containing!("POINT(20.0 20.0)"))
+      result = strip_metadata(Geom.containing!("POINT(20.0 20.0)"))
 
       assert length(result) == 2
       assert Enum.at(result, 0) == area1
@@ -390,38 +420,38 @@ defmodule AshGeo.Test do
     end
 
     test "correctly queries point inside neither polygon" do
-      Area.create!("POLYGON((30.0 0.0, 20.0 30.0, 0.0 10.0, 30.0 0.0))")
-      Area.create!("POLYGON((30.0 10.0, 40.0 40.0, 20.0 40.0, 10.0 20.0, 30.0 10.0))")
-      result = Area.containing!("POINT(10.0 40.0)")
+      Geom.create!("POLYGON((30.0 0.0, 20.0 30.0, 0.0 10.0, 30.0 0.0))")
+      Geom.create!("POLYGON((30.0 10.0, 40.0 40.0, 20.0 40.0, 10.0 20.0, 30.0 10.0))")
+      result = Geom.containing!("POINT(10.0 40.0)")
 
       assert result == []
     end
 
     test "correctly queries polygon inside one polygon" do
-      Area.create!("POLYGON((30.0 0.0, 20.0 30.0, 0.0 10.0, 30.0 0.0))")
+      Geom.create!("POLYGON((30.0 0.0, 20.0 30.0, 0.0 10.0, 30.0 0.0))")
 
       area2 =
         strip_metadata(
-          Area.create!("POLYGON((30.0 10.0, 40.0 40.0, 20.0 40.0, 10.0 20.0, 30.0 10.0))")
+          Geom.create!("POLYGON((30.0 10.0, 40.0 40.0, 20.0 40.0, 10.0 20.0, 30.0 10.0))")
         )
 
       result =
-        strip_metadata(Area.containing!("POLYGON((30.0 30.0, 31.0 31.0, 31.0 32.0, 30.0 30.0))"))
+        strip_metadata(Geom.containing!("POLYGON((30.0 30.0, 31.0 31.0, 31.0 32.0, 30.0 30.0))"))
 
       assert length(result) == 1
       assert Enum.at(result, 0) == area2
     end
 
     test "correctly queries polygon inside both polygons" do
-      area1 = strip_metadata(Area.create!("POLYGON((30.0 0.0, 20.0 30.0, 0.0 10.0, 30.0 0.0))"))
+      area1 = strip_metadata(Geom.create!("POLYGON((30.0 0.0, 20.0 30.0, 0.0 10.0, 30.0 0.0))"))
 
       area2 =
         strip_metadata(
-          Area.create!("POLYGON((30.0 10.0, 40.0 40.0, 20.0 40.0, 10.0 20.0, 30.0 10.0))")
+          Geom.create!("POLYGON((30.0 10.0, 40.0 40.0, 20.0 40.0, 10.0 20.0, 30.0 10.0))")
         )
 
       result =
-        strip_metadata(Area.containing!("POLYGON((20.0 20.0, 21.0 21.0, 21.0 22.0, 20.0 20.0))"))
+        strip_metadata(Geom.containing!("POLYGON((20.0 20.0, 21.0 21.0, 21.0 22.0, 20.0 20.0))"))
 
       assert length(result) == 2
       assert Enum.at(result, 0) == area1
@@ -429,11 +459,55 @@ defmodule AshGeo.Test do
     end
 
     test "correctly queries polygon inside neither polygon" do
-      Area.create!("POLYGON((30.0 0.0, 20.0 30.0, 0.0 10.0, 30.0 0.0))")
-      Area.create!("POLYGON((30.0 10.0, 40.0 40.0, 20.0 40.0, 10.0 20.0, 30.0 10.0))")
-      result = Area.containing!("POLYGON((42.0 0.0, 0.0 42.0, 100.0 42.0, 42.0 0.0))")
+      Geom.create!("POLYGON((30.0 0.0, 20.0 30.0, 0.0 10.0, 30.0 0.0))")
+      Geom.create!("POLYGON((30.0 10.0, 40.0 40.0, 20.0 40.0, 10.0 20.0, 30.0 10.0))")
+      result = Geom.containing!("POLYGON((42.0 0.0, 0.0 42.0, 100.0 42.0, 42.0 0.0))")
 
       assert result == []
+    end
+  end
+
+  describe "Expressions: st_dwithin" do
+    test "correctly queries zero distance for same point" do
+      Geom.create!("SRID=4326;POINT(0 0)")
+      result = Geom.within_distance!("SRID=4326;POINT(0 0)", 0)
+
+      assert length(result) == 1
+    end
+
+    test "correctly queries non-zero distance for same point" do
+      Geom.create!("POINT(0 0)")
+      result = Geom.within_distance!("POINT(0 0)", 1)
+
+      assert length(result) == 1
+    end
+
+    test "correctly queries zero distance for different point" do
+      Geom.create!("POINT(0 0)")
+      result = Geom.within_distance!("POINT(1 1)", 0)
+
+      assert length(result) == 0
+    end
+
+    test "correctly queries zero distance for same polygon" do
+      Geom.create!("POLYGON((30.0 0.0, 20.0 30.0, 0.0 10.0, 30.0 0.0))")
+      result = Geom.within_distance!("POLYGON((30.0 0.0, 20.0 30.0, 0.0 10.0, 30.0 0.0))", 0)
+
+      assert length(result) == 1
+    end
+
+    test "correctly queries non-zero distance for same polygon" do
+      Geom.create!("POLYGON((30.0 0.0, 20.0 30.0, 0.0 10.0, 30.0 0.0))")
+      result = Geom.within_distance!("POLYGON((30.0 0.0, 20.0 30.0, 0.0 10.0, 30.0 0.0))", 1)
+
+      assert length(result) == 1
+    end
+
+    test "correctly queries zero distance for different polygon" do
+      Geom.create!("POLYGON((30.0 0.0, 20.0 30.0, 0.0 10.0, 30.0 0.0))")
+      result = Geom.within_distance!("POLYGON((30.0 0.0, 42.42 30.0, 0.0 10.0, 30.0 0.0))", 0)
+
+      assert length(result) == 1
     end
   end
 end

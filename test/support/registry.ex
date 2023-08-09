@@ -4,8 +4,8 @@ defmodule AshGeo.Test.Registry do
   use Ash.Registry
 
   entries do
-    entry AshGeo.Test.Resource.Validation
     entry AshGeo.Test.Resource.Constraint
-    entry AshGeo.Test.Resource.Area
+    entry AshGeo.Test.Resource.Validation
+    entry AshGeo.Test.Resource.Geom
   end
 end
