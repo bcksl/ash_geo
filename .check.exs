@@ -1,6 +1,5 @@
 [
   tools: [
-    format: "mix format",
     outdated: "mix hex.outdated",
     deps_audit: "mix deps.audit",
     sobelow: "mix sobelow --config",
