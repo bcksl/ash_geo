@@ -32,10 +32,18 @@ It provides:
 ```elixir
 def deps do
   [
-    {:ash_geo, "~> 0.1"},
+    {:ash_geo, "~> 0.1.3"},
   ]
 end
 ```
+
+This package provides a collection of non-overlapping functionality based on
+several dependencies, not all of which may be necessary your application.
+Therefore, the dependencies for the functionality you wish to use must be added
+alongside `:ash_geo`.
+
+- For `Topo` validations, `:topo` must be added.
+- For Postgis expressions, `:geo_postgis` must be added.
 
 ## Configuration
 
@@ -62,7 +70,7 @@ config :ash, :custom_types, [
 ```elixir
 # Postgrex: Geo.PostGIS types
 Postgrex.Types.define(CoolApp.PostgresTypes,
-  [Geo.PostGIS.Extension] ++ Ecto.Adapters.Postgres.extensions(),
+  [Geo.PostGIS.Extension | Ecto.Adapters.Postgres.extensions()],
   json: Jason)
 
 # Ecto: Geo.PostGIS types
@@ -128,7 +136,7 @@ The full documentation can be found [on HexDocs].
 - Replace validation macros with Spark DSL patches or similar.
 - Replace PostGIS `fragment` macros with custom predicates
   ([`ash#374`](https://github.com/ash-project/ash/issues/374))
-- Add datalayer-independent expression predicates backed by [Topo].
+- Add datalayer-independent expression predicates backed by Topo.
 - Add more informative error messages
   ([`ash#365`](https://github.com/ash-project/ash/issues/365)).
 
