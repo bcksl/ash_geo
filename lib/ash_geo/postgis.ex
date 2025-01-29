@@ -274,6 +274,18 @@ defmodule AshGeo.Postgis do
     quote do: expr(fragment("ST_Point(?,?)", unquote(x), unquote(y)))
   end
 
+  defmacro st_point(x, y, srid \\ -1) do
+    quote do: expr(fragment("ST_Point(?,?,?)", unquote(x), unquote(y), unquote(srid)))
+  end
+
+  defmacro st_pointz(x, y, z) do
+    quote do: expr(fragment("ST_PointZ(?,?,?)", unquote(x), unquote(y), unquote(z)))
+  end
+
+  defmacro st_pointz(x, y, z, srid \\ -1) do
+    quote do: expr(fragment("ST_PointZ(?,?,?,?)", unquote(x), unquote(y), unquote(z), unquote(srid)))
+  end
+
   defmacro st_exterior_ring(geometry) do
     quote do: expr(fragment("ST_ExteriorRing(?)", unquote(geometry)))
   end
