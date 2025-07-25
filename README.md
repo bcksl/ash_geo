@@ -65,13 +65,21 @@ config :ash, :custom_types, [
 ]
 ```
 
-### `config/runtime.exs`:
+### `lib/postgres_types.ex`:
 
 ```elixir
 # Postgrex: Geo.PostGIS types
 Postgrex.Types.define(CoolApp.PostgresTypes,
   [Geo.PostGIS.Extension | Ecto.Adapters.Postgres.extensions()],
   json: Jason)
+```
+
+### `config/runtime.exs`:
+
+```elixir
+# Ecto: Geo.PostGIS types
+config :cool_app, CoolApp.Repo, types: CoolApp.PostgresTypes
+```
 
 # Ecto: Geo.PostGIS types
 config :cool_app, CoolApp.Repo, types: CoolApp.PostgresTypes
