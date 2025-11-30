@@ -38,7 +38,7 @@ defmodule AshGeo.MixProject do
   defp deps do
     [
       {:jason, "~> 1.4"},
-      {:geo, "~> 3.5"},
+      {:geo, "~> 3.5 or ~> 4.0"},
       {:ash, "~> 3.0"},
       {:geo_postgis, "~> 3.4", only: :test},
       {:ash_postgres, "~> 2.0", only: :test},
