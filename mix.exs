@@ -2,7 +2,7 @@ defmodule AshGeo.MixProject do
   use Mix.Project
 
   @name :ash_geo
-  @version "0.3.0"
+  @version "0.4.0"
   @description "Tools for using Geo, Topo and PostGIS with Ash"
   @source_url "https://github.com/bcksl/ash_geo"
 
@@ -38,22 +38,24 @@ defmodule AshGeo.MixProject do
   defp deps do
     [
       {:jason, "~> 1.4"},
-      {:geo, "~> 3.5"},
-      {:ash, "~> 3.0"},
-      {:geo_postgis, "~> 3.4", only: :test},
-      {:ash_postgres, "~> 2.0", only: :test},
+      {:geo, "~> 4.1"},
+      {:ash, "~> 3.16"},
+      {:geo_postgis, "~> 3.7", only: :test},
+      {:ash_postgres, "~> 2.6", only: :test},
       {:topo, "~> 1.0", only: :test},
 
+
       # Testing, analysis, documentation, and release tools
+      {:sourceror, "~> 1.10", only: [:dev, :test], runtime: false},
       {:mix_audit, "~> 2.1", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.3", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
-      {:sobelow, "~> 0.13.0", only: [:dev, :test], runtime: false},
-      {:doctor, "~> 0.21.0", only: [:dev, :test], runtime: false},
-      {:excoveralls, "~> 0.16", only: :test, runtime: false},
-      {:ex_check, "~> 0.15", only: [:dev, :test], runtime: false},
-      {:ex_doc, "~> 0.30", only: [:dev, :test], runtime: false},
-      {:git_ops, "~> 2.6", only: :dev, runtime: false}
+      {:sobelow, "~> 0.14", only: [:dev, :test], runtime: false},
+      {:doctor, "~> 0.22", only: [:dev, :test], runtime: false},
+      {:excoveralls, "~> 0.18", only: :test, runtime: false},
+      {:ex_check, "~> 0.16", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.40", only: [:dev, :test], runtime: false},
+      {:git_ops, "~> 2.9", only: :dev, runtime: false}
     ]
   end
 
