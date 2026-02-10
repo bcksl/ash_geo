@@ -1,5 +1,6 @@
 # AshGeo
-### *All your Ash resources, in space!*
+
+### _All your Ash resources, in space!_
 
 [![Hex](http://img.shields.io/hexpm/v/ash_geo.svg?style=flat)](https://hex.pm/packages/ash_geo)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-purple.svg)](https://hexdocs.pm/ash_geo/)
@@ -21,7 +22,7 @@ It provides:
   input from GeoJSON, WKT and WKB encodings.
 - An `Ash.Type` for `Geo.PostGIS.Geometry`, for use with resource attributes.
 - All types may be overridden and narrowed with `use`, allowing you to add
-  stricter constraints and storage types (e.g.  `geometry(Point,26918)`).
+  stricter constraints and storage types (e.g. `geometry(Point,26918)`).
 - Validations for `Geo` types (such as `is_point_zm(:arg)` for checking that
   argument `:arg` is a instance of `Geo.PointZM`)
 - Validations backed by `Topo`, allowing checks of simple constraints such as
@@ -32,7 +33,7 @@ It provides:
 ```elixir
 def deps do
   [
-    {:ash_geo, "~> 0.3.0"},
+    {:ash_geo, "~> 0.4.0"},
   ]
 end
 ```
