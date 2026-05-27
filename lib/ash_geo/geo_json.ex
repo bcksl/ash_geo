@@ -37,6 +37,38 @@ defmodule AshGeo.GeoJson.Use do
 
       def cast_input(value, constraints), do: super(value, constraints)
 
+      @impl Ash.Type
+      def cast_stored(value, constraints)
+
+      @doc """
+      Decode a GeoJSON map loaded from storage, mirroring `cast_input/2`'s
+      map handling. A data layer that stores GeoJSON as a map/JSON value
+      (or a containing type whose nested GeoJSON field deserialises to a
+      map) hands `cast_stored` a map rather than a `%Geo.*{}` struct.
+      Without these clauses the base `cast_stored` rejects maps with
+      `:error`, so e.g. an `AshGeo.GeoJson` field nested inside a
+      TypedStruct fails to load.
+      """
+      def cast_stored(%{type: _} = value, constraints) do
+        with {:ok, value} <- Jason.encode(value),
+             {:ok, value} <- Jason.decode(value),
+             {:ok, value} <- Geo.JSON.decode(value) do
+          {:ok, value}
+        else
+          _ -> :error
+        end
+      end
+
+      @doc "Try decoding stored value with `Geo.JSON`."
+      def cast_stored(value, constraints) when is_map(value) and not is_struct(value) do
+        case Geo.JSON.decode(value) do
+          {:ok, _} = res -> res
+          _ -> :error
+        end
+      end
+
+      def cast_stored(value, constraints), do: super(value, constraints)
+
       @doc false
       def graphql_input_type(_), do: :json
       @doc false
