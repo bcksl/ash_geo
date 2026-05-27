@@ -168,7 +168,7 @@ defmodule AshGeo.Geometry.Use do
       defp constraint_error_geo_types(geo_types, value) do
         [
           message: "must be a struct with type among: %{types}, got: %{value}",
-          types: Enum.map_join(geo_types, ", ", &inspect/1),
+          types: Enum.map_join(List.wrap(geo_types), ", ", &inspect/1),
           value: value
         ]
       end

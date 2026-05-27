@@ -354,6 +354,18 @@ defmodule AshGeo.Test do
     test "rejects integer" do
       assert {:error, _} = Constraint.create_point(42)
     end
+
+    # Constraint.create_point uses `geo_types: :point` (bare atom). Passing
+    # a non-Point Geo struct gets accepted by cast_input (it's a Geo struct)
+    # then fails apply_constraints. The error formatter
+    # `constraint_error_geo_types/2` previously crashed with
+    # `Enum.map_join(:point, ...)` (Protocol.UndefinedError on Atom)
+    # because it didn't `List.wrap` the bare-atom form that
+    # `apply_constraint` accepts. This regression test exercises the
+    # formatter path.
+    test "rejects a wrong-shape Geo struct without crashing the error formatter" do
+      assert {:error, _} = Constraint.create_point("LINESTRING(0 0, 1 1)")
+    end
   end
 
   describe "Argument constraints: check_srid: 4326" do
