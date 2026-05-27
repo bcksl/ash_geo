@@ -48,6 +48,20 @@ defmodule AshGeo.Test do
                {:ok, %Geo.Point{coordinates: {42, 42}, srid: nil, properties: %{}}}
     end
 
+    test "casts stored from atom-keyed map" do
+      assert GeoJson.cast_stored(%{type: "Point", coordinates: [42, 42]}, []) ==
+               {:ok, %Geo.Point{coordinates: {42, 42}, srid: nil, properties: %{}}}
+    end
+
+    test "casts stored from string-keyed map" do
+      assert GeoJson.cast_stored(%{"type" => "Point", "coordinates" => [42, 42]}, []) ==
+               {:ok, %Geo.Point{coordinates: {42, 42}, srid: nil, properties: %{}}}
+    end
+
+    test "casts stored from nil" do
+      assert GeoJson.cast_stored(nil, []) == {:ok, nil}
+    end
+
     test "dumps native from Geo struct" do
       assert GeoJson.dump_to_native(
                %Geo.Point{coordinates: {42, 42}, srid: nil, properties: %{}},
